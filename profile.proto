@@ -27,6 +27,7 @@ service Profile {
     rpc UpdatePicture(Picture) returns (Confirm);
     rpc GetPicture(UserId) returns (Picture);
     rpc ListProfiles(UserIds) returns (UserProfiles);
+    rpc Delete (UserId) returns (Confirm);
 }
 
 message UserProfile {

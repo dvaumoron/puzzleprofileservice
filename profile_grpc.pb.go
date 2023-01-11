@@ -26,6 +26,7 @@ type ProfileClient interface {
 	UpdatePicture(ctx context.Context, in *Picture, opts ...grpc.CallOption) (*Confirm, error)
 	GetPicture(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*Picture, error)
 	ListProfiles(ctx context.Context, in *UserIds, opts ...grpc.CallOption) (*UserProfiles, error)
+	Delete(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*Confirm, error)
 }
 
 type profileClient struct {
@@ -72,6 +73,15 @@ func (c *profileClient) ListProfiles(ctx context.Context, in *UserIds, opts ...g
 	return out, nil
 }
 
+func (c *profileClient) Delete(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*Confirm, error) {
+	out := new(Confirm)
+	err := c.cc.Invoke(ctx, "/puzzleprofileservice.Profile/Delete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProfileServer is the server API for Profile service.
 // All implementations must embed UnimplementedProfileServer
 // for forward compatibility
@@ -80,6 +90,7 @@ type ProfileServer interface {
 	UpdatePicture(context.Context, *Picture) (*Confirm, error)
 	GetPicture(context.Context, *UserId) (*Picture, error)
 	ListProfiles(context.Context, *UserIds) (*UserProfiles, error)
+	Delete(context.Context, *UserId) (*Confirm, error)
 	mustEmbedUnimplementedProfileServer()
 }
 
@@ -98,6 +109,9 @@ func (UnimplementedProfileServer) GetPicture(context.Context, *UserId) (*Picture
 }
 func (UnimplementedProfileServer) ListProfiles(context.Context, *UserIds) (*UserProfiles, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListProfiles not implemented")
+}
+func (UnimplementedProfileServer) Delete(context.Context, *UserId) (*Confirm, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedProfileServer) mustEmbedUnimplementedProfileServer() {}
 
@@ -184,6 +198,24 @@ func _Profile_ListProfiles_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Profile_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProfileServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/puzzleprofileservice.Profile/Delete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProfileServer).Delete(ctx, req.(*UserId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Profile_ServiceDesc is the grpc.ServiceDesc for Profile service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +238,10 @@ var Profile_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListProfiles",
 			Handler:    _Profile_ListProfiles_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _Profile_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
