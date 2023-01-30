@@ -22,11 +22,11 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProfileClient interface {
-	UpdateProfile(ctx context.Context, in *UserProfile, opts ...grpc.CallOption) (*Confirm, error)
-	UpdatePicture(ctx context.Context, in *Picture, opts ...grpc.CallOption) (*Confirm, error)
+	UpdateProfile(ctx context.Context, in *UserProfile, opts ...grpc.CallOption) (*Response, error)
+	UpdatePicture(ctx context.Context, in *Picture, opts ...grpc.CallOption) (*Response, error)
 	GetPicture(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*Picture, error)
 	ListProfiles(ctx context.Context, in *UserIds, opts ...grpc.CallOption) (*UserProfiles, error)
-	Delete(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*Confirm, error)
+	Delete(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*Response, error)
 }
 
 type profileClient struct {
@@ -37,8 +37,8 @@ func NewProfileClient(cc grpc.ClientConnInterface) ProfileClient {
 	return &profileClient{cc}
 }
 
-func (c *profileClient) UpdateProfile(ctx context.Context, in *UserProfile, opts ...grpc.CallOption) (*Confirm, error) {
-	out := new(Confirm)
+func (c *profileClient) UpdateProfile(ctx context.Context, in *UserProfile, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
 	err := c.cc.Invoke(ctx, "/puzzleprofileservice.Profile/UpdateProfile", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -46,8 +46,8 @@ func (c *profileClient) UpdateProfile(ctx context.Context, in *UserProfile, opts
 	return out, nil
 }
 
-func (c *profileClient) UpdatePicture(ctx context.Context, in *Picture, opts ...grpc.CallOption) (*Confirm, error) {
-	out := new(Confirm)
+func (c *profileClient) UpdatePicture(ctx context.Context, in *Picture, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
 	err := c.cc.Invoke(ctx, "/puzzleprofileservice.Profile/UpdatePicture", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -73,8 +73,8 @@ func (c *profileClient) ListProfiles(ctx context.Context, in *UserIds, opts ...g
 	return out, nil
 }
 
-func (c *profileClient) Delete(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*Confirm, error) {
-	out := new(Confirm)
+func (c *profileClient) Delete(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
 	err := c.cc.Invoke(ctx, "/puzzleprofileservice.Profile/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -86,11 +86,11 @@ func (c *profileClient) Delete(ctx context.Context, in *UserId, opts ...grpc.Cal
 // All implementations must embed UnimplementedProfileServer
 // for forward compatibility
 type ProfileServer interface {
-	UpdateProfile(context.Context, *UserProfile) (*Confirm, error)
-	UpdatePicture(context.Context, *Picture) (*Confirm, error)
+	UpdateProfile(context.Context, *UserProfile) (*Response, error)
+	UpdatePicture(context.Context, *Picture) (*Response, error)
 	GetPicture(context.Context, *UserId) (*Picture, error)
 	ListProfiles(context.Context, *UserIds) (*UserProfiles, error)
-	Delete(context.Context, *UserId) (*Confirm, error)
+	Delete(context.Context, *UserId) (*Response, error)
 	mustEmbedUnimplementedProfileServer()
 }
 
@@ -98,10 +98,10 @@ type ProfileServer interface {
 type UnimplementedProfileServer struct {
 }
 
-func (UnimplementedProfileServer) UpdateProfile(context.Context, *UserProfile) (*Confirm, error) {
+func (UnimplementedProfileServer) UpdateProfile(context.Context, *UserProfile) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProfile not implemented")
 }
-func (UnimplementedProfileServer) UpdatePicture(context.Context, *Picture) (*Confirm, error) {
+func (UnimplementedProfileServer) UpdatePicture(context.Context, *Picture) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePicture not implemented")
 }
 func (UnimplementedProfileServer) GetPicture(context.Context, *UserId) (*Picture, error) {
@@ -110,7 +110,7 @@ func (UnimplementedProfileServer) GetPicture(context.Context, *UserId) (*Picture
 func (UnimplementedProfileServer) ListProfiles(context.Context, *UserIds) (*UserProfiles, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListProfiles not implemented")
 }
-func (UnimplementedProfileServer) Delete(context.Context, *UserId) (*Confirm, error) {
+func (UnimplementedProfileServer) Delete(context.Context, *UserId) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedProfileServer) mustEmbedUnimplementedProfileServer() {}

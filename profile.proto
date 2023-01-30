@@ -23,11 +23,11 @@ package puzzleprofileservice;
 
 // The profile service definition.
 service Profile {
-    rpc UpdateProfile(UserProfile) returns (Confirm);
-    rpc UpdatePicture(Picture) returns (Confirm);
+    rpc UpdateProfile(UserProfile) returns (Response);
+    rpc UpdatePicture(Picture) returns (Response);
     rpc GetPicture(UserId) returns (Picture);
     rpc ListProfiles(UserIds) returns (UserProfiles);
-    rpc Delete (UserId) returns (Confirm);
+    rpc Delete (UserId) returns (Response);
 }
 
 message UserProfile {
@@ -36,7 +36,7 @@ message UserProfile {
     map<string, string> info = 3;
 }
 
-message Confirm {
+message Response {
     bool success = 1;
 }
 
